@@ -18,11 +18,11 @@ PyPi: https://pypi.org/project/AutoAILib/
   </ul>
   <h5> Demo:</h5>
   Given the a path to the following folder:
-  <img src="https://imgur.com/SSpydEv"></img>
+  <img src="https://i.imgur.com/SSpydEv.png"></img>
   If augmentation used the following results will be yielded:
-  <img src="https://imgur.com/4okyMrN"></img>
+  <img src="https://i.imgur.com/4okyMrN.png"></img>
   Then these images will be copied to the dest folder with copied file structure, but an added upper layer:
-  <img src="https://imgur.com/TY7HvL4"</img>
+  <img src="https://i.imgur.com/TY7HvL4.png"</img>
   Example showing the images made it:
-  <img src="https://imgur.com/3ily5dU"</img>
+  <img src="https://i.imgur.com/3ily5dU.png"</img>
   
