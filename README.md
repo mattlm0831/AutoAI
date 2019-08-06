@@ -16,3 +16,13 @@ PyPi: https://pypi.org/project/AutoAILib/
   <li> Dest - Path to a folder where you want the data to end up. </li>
   <li> Num_imgs_per_class - This number of images will be added to the original set for each class through transforms. The theoretical limit for this would be 3! * original images per class </li>
   </ul>
+  <h5> Demo:</h5>
+  Given the a path to the following folder:
+  <img src="https://imgur.com/SSpydEv"></img>
+  If augmentation used the following results will be yielded:
+  <img src="https://imgur.com/4okyMrN"></img>
+  Then these images will be copied to the dest folder with copied file structure, but an added upper layer:
+  <img src="https://imgur.com/TY7HvL4"</img>
+  Example showing the images made it:
+  <img src="https://imgur.com/3ily5dU"</img>
+  
