@@ -18,6 +18,7 @@ import cv2
 def check_right(row):
     if row['file'] == row['prediction']:
         return 'Correct'
+    else:
         return 'Incorrect'
   
 def manual_test(model, testing_dir, labels):
