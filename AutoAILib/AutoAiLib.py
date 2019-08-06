@@ -28,9 +28,12 @@ def manual_test(model, testing_dir, labels):
     
     classes = os.listdir(testing_dir)
     if type(model) == str:
+        #If the model is a path, open it
         model = m.load_model(model)
     else:
+        #else its an object
         model = model
+    #Fetches the classes of the testing directory
     sub_dirs = [os.path.join(testing_dir, x) for x in classes]
     all_files = list()
     predictions = list()
