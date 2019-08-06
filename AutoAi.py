@@ -25,9 +25,12 @@ def manual_test(model, testing_dir, labels):
     print("Testing")
     #model should be a path to the model, testing_dir is the directory which contains all your testing images/classes, labels
     #should be a dictionary of the classes, in form (index:class_name).
-    model = m.load_model(model)
-    classes = os.listdir(testing_dir)
     
+    classes = os.listdir(testing_dir)
+    if type(model) == str:
+        model = m.load_model(model)
+    else:
+        model = model
     sub_dirs = [os.path.join(testing_dir, x) for x in classes]
     all_files = list()
     predictions = list()
@@ -79,7 +82,7 @@ def manual_test(model, testing_dir, labels):
 
 
 
-def compile_data(src, dest, num_imgs_per_class = 0):
+def compile_data(src, dest, num_imgs_per_class = 0, train_ratio = .7, validation_ratio = .2, test_ratio = .1):
     #Given the original data directory this script creates the
     #directories, transforms images (if provided a number of imgs to generate for each class)
     # and places them in the destination folders.
@@ -90,7 +93,7 @@ def compile_data(src, dest, num_imgs_per_class = 0):
         
         transform_many(src, num_imgs_per_class)
     
-    place_images(dest, src)
+    place_images(dest, src, train=train_ratio, validation = validation_ratio, test = test_ratio)
         
 
 
@@ -125,7 +128,7 @@ def create_dirs(ROOT_DIR, original_data_dir):
             os.mkdir(p)
     
         
-def place_images(ROOT_DIR, original_data_dir):
+def place_images(ROOT_DIR, original_data_dir, train=.7, validation=.2, test=.1):
     
     dirs = os.listdir(original_data_dir)
     train_dir= os.path.join(ROOT_DIR, 'train')
@@ -140,8 +143,8 @@ def place_images(ROOT_DIR, original_data_dir):
         dest_dir = ''
         all_pictures = os.listdir(new_dir)
         total+= len(all_pictures)
-        train_limit = int(len(all_pictures) * .70)
-        validate_limit = int(len(all_pictures) * .20) + train_limit
+        train_limit = int(len(all_pictures) * train)
+        validate_limit = int(len(all_pictures) * validation) + train_limit
         
         for i in range(0, train_limit):
             dest_dir = os.path.join(train_dir, dname)          
