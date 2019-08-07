@@ -20,6 +20,11 @@ import skimage as sk
 from skimage import transform
 from skimage import util
 
+
+
+
+
+
 def check_right(row):
     if row['file'] == row['prediction']:
         return 'Correct'
@@ -87,6 +92,10 @@ def manual_test(model, testing_dir, labels):
 
 
 
+
+
+
+
 class data_compiler:
     
     def __init__(self,src, dest, **kwargs):
@@ -96,7 +105,6 @@ class data_compiler:
         
     def run(self):
         compile_data(**self.__dict__)
-
 
 def compile_data(src, dest, num_imgs_per_class = 0, train_ratio = .7, validation_ratio = .2, test_ratio = .1):
     #Given the original data directory this script creates the
@@ -110,18 +118,93 @@ def compile_data(src, dest, num_imgs_per_class = 0, train_ratio = .7, validation
         transform_many(src, num_imgs_per_class)
     
     place_images(dest, src, train=train_ratio, validation = validation_ratio, test = test_ratio)
-     
-def image_predict(model, image, labels):
-    image = cv2.imread(image)
-    orig= image.copy()
     
-    image = cv2.resize(image, (150,150))
+    
+    
+    
+    
+    
+    
+    
+class convnet_tester():
+
+
+    def __init__(self, model, labels):    
+        if type(model) == str:
+            self.model = m.load_model(model)
+        else:
+            self.model = model
+        self.labels = labels
+        
+    def predict_image(self, image):
+        image_predict(self.model, image, self.labels)
+        
+    def large_scale_test(self, testing_dir):
+        
+        classes = os.listdir(testing_dir)
+        if not classes:
+            print("Your provided testing directory is not populated")
+        if len(classes) != len(self.labels):
+            print("Incorrect labels or testing directory. They must have the same number of classes")
+            return
+        sub_dirs = [os.path.join(testing_dir, x) for x in classes]
+        all_files = list()
+        predictions = list()
+        
+        
+        
+        for d in sub_dirs:
+            files_in_path = os.listdir(d)
+            
+            for f in files_in_path:
+                img_path = os.path.join(d, f)
+                img_name = d.split('\\')[-1] + '/' +  f
+                image = cv2.imread(img_path)
+                all_files.append(img_name)
+                size = tuple((self.model.input_shape[1], self.model.input_shape[2]))
+                image = cv2.resize(image, size)
+                image = image.astype("float") / 255.0
+                image = img_to_array(image)
+                image = np.expand_dims(image, axis=0)
+                
+                pred = self.model.predict(image)
+                choice = np.argmax(pred)
+                pred = self.labels[choice]
+                predictions.append(pred)    
+            
+        
+        
+        all_files = [i.split('/')[0] for i in all_files]
+        results = pd.DataFrame({'file' : all_files, 'prediction' : predictions})
+        results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
+        #grouping = 
+        grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()
+        results = pd.concat([results, grouping], axis = 1)
+        os.chdir(os.path.dirname(testing_dir))
+        p = os.path.dirname(testing_dir)
+        if 'results.csv' in os.listdir(p):
+            name = 'results_' + str(len(os.listdir(p)) + 1) + '.csv'
+            #name2= 'grouping_results_' + str(len(os.listdir(p)) + 1) + '.csv'
+            results.to_csv(os.path.join(p, name), index= False)
+            #grouping.to_csv(os.path.join(p, name2), index= False)
+        else:
+            name =  "results.csv"
+            #name2= 'grouping_results' + '.csv'
+            results.to_csv(os.path.join(p, name), index = False)
+            #grouping.to_csv(os.path.join(p, name2), index= False)
+        
+        print("[" + name + '] created')
+        return
+    
+    
+def image_predict(model, image_path, labels):
+    image = cv2.imread(image_path)
+    orig= image.copy()
+    image = cv2.resize(image, (model.input_shape[1], model.input_shape[2]))
     image = image.astype("float") / 255.0
     image = img_to_array(image)
     image = np.expand_dims(image, axis=0)
-    
-    
-    model = m.load_model(model)
+
     pred = model.predict(image)[0]
     guess = np.argmax(pred, axis=-1)
     percentage = pred[guess]
@@ -133,10 +216,29 @@ def image_predict(model, image, labels):
                 0.7, (0, 255, 0), 2)
     cv2.imshow("Output", output)
     cv2.waitKey(0)    
-    l = len(os.listdir(os.path.dirname(model)))
+    l = len(os.listdir(os.path.dirname(image_path)))
     name = "This_is_" + str(letter) + str(l+1) + ".png"
-    cv2.imwrite(os.path.join(os.path.dirname(model), name), output)
+    cv2.imwrite(os.path.join(os.path.dirname(image_path), name), output)
     print("Prediction created:" + name)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def create_dirs(ROOT_DIR, original_data_dir):
     
@@ -295,9 +397,4 @@ def transform_many(folder, num_files_desired = 300):
             val+=1
         
     bar.finish()
-    print('\nGenerated ', val, ' images.')
-    
-    
-    
-    
-    
+    print('\nGenerated ', val, ' images.')    
