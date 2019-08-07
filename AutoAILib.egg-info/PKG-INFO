@@ -1,13 +1,13 @@
 Metadata-Version: 2.1
 Name: AutoAILib
-Version: 0.3.4.dev0
+Version: 0.3.5.dev0
 Summary: UNKNOWN
 Home-page: UNKNOWN
 Author: Matthew Mulhall
 Author-email: matthewlmulhall@gmail.com
 License: GNU GPLv3
 Description: <h1>AutoAI</h1>
-        <p>This repository is a compilation of scripts that I have created in my time working with machine learning. These scripts aim to automate the annoying and silly parts of ML, allowing you to focus on what is important.
+        <p>This repository is a compilation of scripts that I have created in my time working with machine learning. These scripts aim to automate the annoying and tedious parts of ML, allowing you to focus on what is important.
         PyPi: https://pypi.org/project/AutoAILib/
         </br> $ pip install autoailib
         <h2> AutoAi.manual_test(model, testing_dir, labels) </h2>

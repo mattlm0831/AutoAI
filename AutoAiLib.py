@@ -87,14 +87,22 @@ def manual_test(model, testing_dir, labels):
 
 
 
-
+class data_compiler:
+    
+    def __init__(self,src, dest, **kwargs):
+        self.src = src
+        self.dest = dest
+        self.__dict__.update(kwargs)
+        
+    def run(self):
+        compile_data(**self.__dict__)
 
 
 def compile_data(src, dest, num_imgs_per_class = 0, train_ratio = .7, validation_ratio = .2, test_ratio = .1):
     #Given the original data directory this script creates the
     #directories, transforms images (if provided a number of imgs to generate for each class)
     # and places them in the destination folders.
-       
+   
     create_dirs(dest, src)
     
     if num_imgs_per_class:
