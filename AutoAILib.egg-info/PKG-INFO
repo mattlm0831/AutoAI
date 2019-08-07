@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: AutoAILib
-Version: 0.3.7.dev0
+Version: 0.3.7.1.dev0
 Summary: UNKNOWN
 Home-page: UNKNOWN
 Author: Matthew Mulhall
@@ -13,7 +13,7 @@ Description: <h1>AutoAI</h1>
         This library was developed for and used with keras convolutional neural networks. They do however work with other keras models, besides image test obviously.
         <body>
             <h1> AutoAi.convnet_tester(model path or object, labels) </h1>
-            <a href="https://drive.google.com/file/d/18eXBwmpETwLgu8bhMysRIBBfFULKJpzd/view?usp=sharing"> Class Demo </a>
+            <a href="https://youtu.be/sM57JDasREk"> Class Video Demo </a>
             <h2> AutoAi.image_predict(model_path, image_path, labels)</h2>
             <h5> This function takes 3 arguments: a path to a keras model, a path to an image, and a list of labels.</h5>
             <h5> Demo:</h5>
