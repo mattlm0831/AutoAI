@@ -3,15 +3,23 @@ This repository is a compilation of scripts that I have created in my time worki
 PyPi: https://pypi.org/project/AutoAILib/
 </br> $ pip install autoailib </br>
 This library was developed for and used with keras convolutional neural networks. They do however work with other keras models, besides image test obviously.
-<h2> AutoAi.manual_test(model, testing_dir, labels) </h2>
-<h5> This function tests a model given labels and testing data. It then compiles the results in a CSV file, and groups the results by class, and by correct and incorrect.</h5>
-<ul> 
-  <li> Model - Path of model that you want to test or model object.</li>
-  <li> Testing_dir - Path to the directory with your testing data.</li>
-  <li> Labels - Dictionary of the classes, in form (index:class_name)</li>
-  </ul>
-  <h5>Example csv:</h5>
-  <img src="https://i.imgur.com/g4gNQjS.png"></img>
+<body>
+<h1> AutoAi.convnet_tester(model path or object, labels) </h1>
+    <h2> AutoAi.image_predict(model_path, image_path, labels)</h2>
+    <h5> This function takes 3 arguments: a path to a keras model, a path to an image, and a list of labels.</h5>
+    <h5> Demo:</h5>
+    Given a the correct arguments, we get the following output, as well as this image saved to our model directory.
+    <img src="https://i.imgur.com/woiPdus.png"></img>
+  <h2> AutoAi.manual_test(model, testing_dir, labels) </h2>
+  <h5> This function tests a model given labels and testing data. It then compiles the results in a CSV file, and groups the results by class, and by correct and incorrect.</h5>
+  <ul> 
+    <li> Model - Path of model that you want to test or model object.</li>
+    <li> Testing_dir - Path to the directory with your testing data.</li>
+    <li> Labels - Dictionary of the classes, in form (index:class_name)</li>
+    </ul>
+    <h5>Example csv:</h5>
+    <img src="https://i.imgur.com/g4gNQjS.png"></img>
+    </body
 <h2>Update! This has now been packaged in the AutoAI.data_compiler class.
   AutoAi.data_compiler(self,src, dest, **kwargs)</br>
   AutoAi.data_compiler.run() will compile the data based on the constructor parameters. </h2>
@@ -31,9 +39,4 @@ This library was developed for and used with keras convolutional neural networks
   Example showing the images made it:
   <img src="https://i.imgur.com/3ily5dU.png"</img>
   
-  
-  <h2> AutoAi.image_predict(model_path, image_path, labels)</h2>
-  <h5> This function takes 3 arguments: a path to a keras model, a path to an image, and a list of labels.</h5>
-  <h5> Demo:</h5>
-  Given a the correct arguments, we get the following output, as well as this image saved to our model directory.
-  <img src="https://i.imgur.com/woiPdus.png"></img>
+
