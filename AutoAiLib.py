@@ -6,6 +6,7 @@ Created on Tue Aug  6 09:35:27 2019
 """
 import os
 import random
+import imutils
 import shutil
 import progressbar
 import pandas as pd
@@ -18,7 +19,6 @@ from scipy import ndimage
 import skimage as sk
 from skimage import transform
 from skimage import util
-
 
 def check_right(row):
     if row['file'] == row['prediction']:
@@ -68,7 +68,7 @@ def manual_test(model, testing_dir, labels):
     all_files = [i.split('/')[0] for i in all_files]
     results = pd.DataFrame({'file' : all_files, 'prediction' : predictions})
     results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
-    grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()
+    grouping = results.groupby(['class', 'correct/incorrect'], as_index=False).count()
     results = pd.concat([results, grouping], axis = 1)
     os.chdir(os.path.dirname(testing_dir))
     p = os.path.dirname(testing_dir)
@@ -103,8 +103,32 @@ def compile_data(src, dest, num_imgs_per_class = 0, train_ratio = .7, validation
     
     place_images(dest, src, train=train_ratio, validation = validation_ratio, test = test_ratio)
         
-
-
+def image_predict(model, image, labels):
+    image = cv2.imread(image)
+    orig= image.copy()
+    
+    image = cv2.resize(image, (150,150))
+    image = image.astype("float") / 255.0
+    image = img_to_array(image)
+    image = np.expand_dims(image, axis=0)
+    
+    
+    model = m.load_model(model)
+    pred = model.predict(image)[0]
+    guess = np.argmax(pred, axis=-1)
+    percentage = pred[guess]
+    letter = labels[guess]
+        
+    text = "{}: {:.3f}%".format(letter, percentage*100)
+    output = imutils.resize(orig, width = 400)
+    cv2.putText(output, text, (10,25), cv2.FONT_HERSHEY_SIMPLEX,
+                0.7, (0, 255, 0), 2)
+    cv2.imshow("Output", output)
+    cv2.waitKey(0)    
+    l = len(os.listdir(os.path.dirname(model)))
+    name = "This_is_" + str(letter) + str(l+1) + ".png"
+    cv2.imwrite(os.path.join(os.path.dirname(model), name), output)
+    print("Prediction created:" + name)
 
 def create_dirs(ROOT_DIR, original_data_dir):
     
