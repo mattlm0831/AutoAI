@@ -102,7 +102,7 @@ def compile_data(src, dest, num_imgs_per_class = 0, train_ratio = .7, validation
         transform_many(src, num_imgs_per_class)
     
     place_images(dest, src, train=train_ratio, validation = validation_ratio, test = test_ratio)
-        
+     
 def image_predict(model, image, labels):
     image = cv2.imread(image)
     orig= image.copy()
