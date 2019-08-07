@@ -9,6 +9,8 @@ PyPi: https://pypi.org/project/AutoAILib/
   <li> Testing_dir - Path to the directory with your testing data.</li>
   <li> Labels - Dictionary of the classes, in form (index:class_name)</li>
   </ul>
+  <h5>Example csv:</h5>
+  <img src="https://i.imgur.com/g4gNQjS.png"></img>
 <h2> AutoAi.compile_data(src, dest, num_imgs_per_class=0, train_ratio=.7, validation_ratio=.2, test_ratio=.1) </h2>
 <h5> This function takes 2 required arguments, an original data source file, and a path to the desired data directory. Given just these two arguments, this function will create a new testing data folder at dest with training, validation, and testing folders, containing folders for each class. You can alter the ratio with the ratio arguments, as well as provide a number of img transforms to do if you are using images.</h5>
 <ul>
