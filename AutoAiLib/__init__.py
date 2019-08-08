@@ -21,6 +21,13 @@ from skimage import transform
 from skimage import util
 
 
+######If you are reading this, thank you for downloading my library######
+######Please pardon the appearance and innerworkings of this code  ######
+######All of this code was written on an as needed basis, and is   ######
+######currently undergoing heavy modifications before it reaches a ######
+######launch stage.#######
+
+
 
 
 
@@ -31,61 +38,6 @@ def check_right(row):
     else:
         return 'Incorrect'
   
-def manual_test(model, testing_dir, labels):
-    print("Testing")
-    #model should be a path to the model, testing_dir is the directory which contains all your testing images/classes, labels
-    #should be a dictionary of the classes, in form (index:class_name).
-    
-    classes = os.listdir(testing_dir)
-    if type(model) == str:
-        #If the model is a path, open it
-        model = m.load_model(model)
-    else:
-        #else its an object
-        model = model
-    #Fetches the classes of the testing directory
-    sub_dirs = [os.path.join(testing_dir, x) for x in classes]
-    all_files = list()
-    predictions = list()
-    
-    print(labels)
-    
-    for d in sub_dirs:
-        files_in_path = os.listdir(d)
-        
-        for f in files_in_path:
-            img_path = os.path.join(d, f)
-            img_name = d.split('\\')[-1] + '/' +  f
-            image = cv2.imread(img_path)
-            all_files.append(img_name)
-            image = cv2.resize(image, (150,150))
-            image = image.astype("float") / 255.0
-            image = img_to_array(image)
-            image = np.expand_dims(image, axis=0)
-            
-            pred = model.predict(image)
-            choice = np.argmax(pred)
-            pred = labels[choice]
-            predictions.append(pred)    
-        
-    
-    
-    all_files = [i.split('/')[0] for i in all_files]
-    results = pd.DataFrame({'file' : all_files, 'prediction' : predictions})
-    results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
-    grouping = results.groupby(['class', 'correct/incorrect'], as_index=False).count()
-    results = pd.concat([results, grouping], axis = 1)
-    os.chdir(os.path.dirname(testing_dir))
-    p = os.path.dirname(testing_dir)
-    if 'results.csv' in os.listdir(p):
-        name = 'results_' + str(len(os.listdir(p)) + 1) + '.csv'
-        results.to_csv(os.path.join(p, name), index= False)
-    else:
-        name =  "results.csv"
-        results.to_csv(os.path.join(p, name), index = False)
-        
-    print("[" + name + '] created')
-    return
 
 
 
@@ -104,25 +56,126 @@ class data_compiler:
         self.__dict__.update(kwargs)
         
     def run(self):
-        compile_data(**self.__dict__)
+        self.compile_data(**self.__dict__)
 
-def compile_data(src, dest, num_imgs_per_class = 0, train_ratio = .7, validation_ratio = .2, test_ratio = .1):
-    #Given the original data directory this script creates the
-    #directories, transforms images (if provided a number of imgs to generate for each class)
-    # and places them in the destination folders.
-   
-    create_dirs(dest, src)
-    
-    if num_imgs_per_class:
+
+    def compile_data(self, src, dest, num_imgs_per_class = 0, train_ratio = .7, validation_ratio = .2, test_ratio = .1):
+        #Given the original data directory this script creates the
+        #directories, transforms images (if provided a number of imgs to generate for each class)
+        # and places them in the destination folders.
+       
+        create_dirs(dest, src)
         
-        transform_many(src, num_imgs_per_class)
+        if num_imgs_per_class:
+            
+            transform_many(src, num_imgs_per_class)
+        
+        place_images(dest, src, train=train_ratio, validation = validation_ratio, test = test_ratio)
     
-    place_images(dest, src, train=train_ratio, validation = validation_ratio, test = test_ratio)
+class general_tester():
     
+    def __init__(self, model, labels, preprocessor = None):
+        #if you want to automate further, you can add a preprocessor
+        #the preprocessor can be a method, or a lambda, and
+        #when given, this general tester is far more automated
+        
+        if type(model) == str:
+            self.model = m.load_model(model)
+        else:
+            self.model = model
+        self.preprocessor = preprocessor
+        self.labels = labels
+        
+    def predict_single(self, _input):
+        
+        if self.preprocessor:
+            _input = self.preprocessor(_input)
+        try:
+            pred = self.model.predict(_input)[0]
+            guess = np.argmax(pred, axis=-1)
+            percentage = pred[guess]
+            label = self.labels[guess]
+            print("I predict with " + str(percentage) + " certainty that this is a/an " + str(label))
+        except ValueError:
+            print("Your input data was not correctly formatted for your model" )
     
-    
-    
-    
+    def predict_many(self, container=None, testing_folder=None, csv_dir=None):
+        
+        if testing_folder:
+             return self.folder_test(testing_folder, csv_dir)
+        
+        if self.preprocessor:
+            data = [self.preprocessor(i) for i in container]
+        predictions=[]
+        for example in data:
+            pred = self.model.predict(example)
+            choice = np.argmax(pred)
+            pred = self.labels[choice]
+            predictions.append(pred)
+            
+        results = pd.DataFrame({'prediction' : predictions})
+        if csv_dir:
+            name = 'results_' + str(len(os.listdir(csv_dir)) + 1) + '.csv'            
+            results.to_csv(os.path.join(csv_dir, name), index= False)
+            
+            print("[" + name + '] created')
+            return
+        else:
+            return results
+        
+        
+    def folder_test(self, testing_dir, csv_dir):
+        
+        assert(self.preprocessor)
+        classes = os.listdir(testing_dir)
+        if not classes:
+            print("Your provided testing directory is not populated")
+        if len(classes) != len(self.labels):
+            print("Incorrect labels or testing directory. They must have the same number of classes")
+            return
+        sub_dirs = [os.path.join(testing_dir, x) for x in classes]
+        all_files = list()
+        predictions = list()
+        
+        
+        
+        for d in sub_dirs:
+            files_in_path = os.listdir(d)
+            
+            for f in files_in_path:
+                object_path = os.path.join(d, f)
+                object_name = d.split('\\')[-1] + '/' +  f
+                obj= self.preprocessor(object_path)
+                all_files.append(object_name)
+                pred = self.model.predict(obj)
+                choice = np.argmax(pred)
+                pred = self.labels[choice]
+                predictions.append(pred)    
+            
+        
+        
+        all_files = [i.split('/')[0] for i in all_files]
+        results = pd.DataFrame({'file' : all_files, 'prediction' : predictions})
+        results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
+        #grouping = 
+        grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()       
+        results = pd.concat([results, grouping], axis = 1)
+        results.columns = ['true-class', 'prediction', 'correct/incorrect', 'class', 'correct/incorrect', 'prediction']
+        
+        if csv_dir:
+            p = csv_dir
+        else:
+            return results
+        
+        if 'results.csv' in os.listdir(p):
+            name = 'results_' + str(len(os.listdir(p)) + 1) + '.csv'
+            results.to_csv(os.path.join(p, name), index= False)
+        else:
+            name =  "results.csv"
+            results.to_csv(os.path.join(p, name), index = False)
+        
+        print("[" + name + '] created')
+        return
     
     
     
@@ -136,8 +189,17 @@ class convnet_tester():
             self.model = model
         self.labels = labels
         
+        
     def predict_image(self, image):
         image_predict(self.model, image, self.labels)
+        
+    def image_preprocessing(self, image):
+        image = cv2.resize(image, (self.model.input_shape[1], self.model.input_shape[2]))
+        image = image.astype("float") / 255.0
+        image = img_to_array(image)
+        image = np.expand_dims(image, axis=0)
+        return image
+        
         
     def large_scale_test(self, testing_dir):
         
@@ -161,12 +223,7 @@ class convnet_tester():
                 img_name = d.split('\\')[-1] + '/' +  f
                 image = cv2.imread(img_path)
                 all_files.append(img_name)
-                size = tuple((self.model.input_shape[1], self.model.input_shape[2]))
-                image = cv2.resize(image, size)
-                image = image.astype("float") / 255.0
-                image = img_to_array(image)
-                image = np.expand_dims(image, axis=0)
-                
+                image = self.image_preprocessing(image)
                 pred = self.model.predict(image)
                 choice = np.argmax(pred)
                 pred = self.labels[choice]
@@ -178,8 +235,9 @@ class convnet_tester():
         results = pd.DataFrame({'file' : all_files, 'prediction' : predictions})
         results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
         #grouping = 
-        grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()
+        grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()       
         results = pd.concat([results, grouping], axis = 1)
+        results.columns = ['true-class', 'prediction', 'correct/incorrect', 'class', 'correct/incorrect', 'prediction']
         os.chdir(os.path.dirname(testing_dir))
         p = os.path.dirname(testing_dir)
         if 'results.csv' in os.listdir(p):
