@@ -4,12 +4,17 @@ PyPi: https://pypi.org/project/AutoAILib/
 </br> $ pip install autoailib </br>
 This library was developed for and used with keras convolutional neural networks. They do however work with other keras models, besides image test obviously.
 <body>
-    <h1> AutoAi.general_tester(model path or object, labels, preprocessor)</h1>
+    <h1> AutoAiLib.general_tester(model path or object, labels, preprocessor)</h1>
     <a href="https://youtu.be/TQisVhgUzWo"> Class Video Demo</a>
-    <h2> AutoAi.predict_single(example)</h2>
+    <h2> AutoAiLib.general_tester.predict_single(example)</h2>
     <ul><li>example- If you have defined a preprocessor for your tester, this should comply with the preprocessor's argument. If
         you have not defined a preprocessor, example must be in a form that your model will accept.</li></ul>
-    
+    <h2> AutoAiLib.general_tester.predict_many(container=None, testing_folder = None, csv_dir)</h2>
+        <ul>
+            <li> container - This can be a container of test objects (any iterable). If preprocessor is defined, these objects must comply with the preprocessors parameter. Otherwise they must be in a form that your model will accept.</li>
+            <li> testing_dir - This can be a path to a testing folder which has sub folders of all classes. Again, must be preprocessed or have preprocessor defined.</li>
+            <li> csv_dir - This function compiles data into a csv folder to allow users to easily extract data from it, if not defined it will return a pandas data frame.</li>
+    </ul>
 </body>
     
 
