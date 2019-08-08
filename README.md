@@ -4,6 +4,18 @@ PyPi: https://pypi.org/project/AutoAILib/
 </br> $ pip install autoailib </br>
 This library was developed for and used with keras convolutional neural networks. They do however work with other keras models, besides image test obviously.
 <body>
+    <h1> AutoAi.general_tester(model path or object, labels, preprocessor)</h1>
+    <a href="https://youtu.be/TQisVhgUzWo"> Class Video Demo</a>
+    <h2> AutoAi.predict_single(example)</h2>
+    <ul><li>example- If you have defined a preprocessor for your tester, this should comply with the preprocessor's argument. If
+        you have not defined a preprocessor, example must be in a form that your model will accept.</li></ul>
+    
+</body>
+    
+
+
+
+<body>
     <h1> AutoAi.convnet_tester(model path or object, labels) </h1>
     <a href="https://youtu.be/sM57JDasREk"> Class Video Demo </a>
     <h2> AutoAi.image_predict(model_path, image_path, labels)</h2>
