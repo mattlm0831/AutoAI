@@ -58,4 +58,15 @@ This library was developed for and used with keras convolutional neural networks
   Example showing the images made it:
   <img src="https://i.imgur.com/3ily5dU.png"</img>
   
-
+  
+  <body>
+    <h2>Homeless Methods:</h2>
+    <h4> model_to_img(model_path) </h4>
+    Returns an image form of your model.
+    <h4> plot(history=None, file=None, min_=0, max_=1)</h4>
+    <ul><li>history- numpy file (Keras callback)</li>
+        <li>file - path to a .npy file.</li>
+        <li>min_ - the minimum of accuracy/loss in the graph</li>
+        <li>max_ - the maximum of accuracy/loss in the graph, the closer the min and max, the more zoomed your graph will be</li> 
+    </ul>
+    </body>
