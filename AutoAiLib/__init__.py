@@ -39,15 +39,6 @@ def check_right(row):
         return 'Incorrect'
   
 
-
-
-
-
-
-
-
-
-
 class data_compiler:
     
     def __init__(self,src, dest, **kwargs):
@@ -157,7 +148,6 @@ class general_tester():
         all_files = [i.split('/')[0] for i in all_files]
         results = pd.DataFrame({'file' : all_files, 'prediction' : predictions})
         results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
-        #grouping = 
         grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()       
         results = pd.concat([results, grouping], axis = 1)
         results.columns = ['true-class', 'prediction', 'correct/incorrect', 'class', 'correct/incorrect', 'prediction']
@@ -240,16 +230,13 @@ class convnet_tester():
         results.columns = ['true-class', 'prediction', 'correct/incorrect', 'class', 'correct/incorrect', 'prediction']
         os.chdir(os.path.dirname(testing_dir))
         p = os.path.dirname(testing_dir)
+        
         if 'results.csv' in os.listdir(p):
             name = 'results_' + str(len(os.listdir(p)) + 1) + '.csv'
-            #name2= 'grouping_results_' + str(len(os.listdir(p)) + 1) + '.csv'
             results.to_csv(os.path.join(p, name), index= False)
-            #grouping.to_csv(os.path.join(p, name2), index= False)
         else:
             name =  "results.csv"
-            #name2= 'grouping_results' + '.csv'
             results.to_csv(os.path.join(p, name), index = False)
-            #grouping.to_csv(os.path.join(p, name2), index= False)
         
         print("[" + name + '] created')
         return
