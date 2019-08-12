@@ -37,7 +37,8 @@ This library was developed for and used with keras convolutional neural networks
     </ul>
     <h5>Example csv:</h5>
     <img src="https://i.imgur.com/g4gNQjS.png"></img>
-    </body>
+</body>
+
 <h2>Update! This has now been packaged in the AutoAI.data_compiler class.
   AutoAi.data_compiler(self,src, dest, **kwargs)</br>
   AutoAi.data_compiler.run() will compile the data based on the constructor parameters. </h2>
