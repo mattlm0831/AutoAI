@@ -19,6 +19,10 @@ from scipy import ndimage
 import skimage as sk
 from skimage import transform
 from skimage import util
+import matplotlib.pyplot as plt
+from keras.utils import plot_model
+
+
 
 
 ######If you are reading this, thank you for downloading my library######
@@ -27,6 +31,58 @@ from skimage import util
 ######currently undergoing heavy modifications before it reaches a ######
 ######launch stage.#######
 
+def plot(history=None, file = None, min_ = 0, max_ = 1):
+    
+     
+     if not history and not file:
+         return "Cannot operate on nothing"
+     
+     if not history:
+         history = np.load(os.path.join(file, 'history.npy'))
+         history = history[()]
+     else:
+         history = np.load(file)
+         history = history[()]
+     acc = history.history['acc']
+     val_acc= history.history['val_acc']
+     loss = history.history['loss']
+     val_loss = history.history['val_loss']
+
+     epochs = range(1, len(acc) + 1)
+
+     plt.plot(epochs, acc, 'bo', label='Training Accuracy', color = '#991A00', linewidth = .5)
+     plt.plot(epochs, val_acc, 'b', label='Validation Accuracy', color = '#991A00', linewidth = 2)
+     plt.title('Training and Validation Accuracy')
+     plt.legend()
+     plt.axis([0, len(acc)+1,min_,max_])
+     if file:
+         plt.savefig(os.path.join(file, 'acc_' + file.split('//')[-1] + '.png'))
+     else:
+         plt.savefig(os.path.join(file, 'train-vs-val-acc.png'))
+     plt.figure()
+     
+    
+    
+    
+     plt.plot(epochs, loss, 'bo', label = 'Training loss', color = '#991A00', linewidth = .5)
+     plt.plot(epochs, val_loss, 'b', label = 'Validation Loss', color = '#991A00', linewidth = 2)
+     plt.title('Training and Validation Loss')
+     plt.legend()
+     plt.axis([0,len(acc)+1, min_ , max_])
+     if history:
+         plt.savefig(os.path.join(file, 'loss_' + file.split('//')[-1] + '.png'))
+     else:
+         plt.savefig(os.path.join(file, 'train-vs-val-loss.png'))
+     plt.figure()
+     
+
+def model_to_img(model_path):
+
+     model = m.load_model(model_path)
+     file_path = os.path.dirname(os.path.abspath(model_path))
+     file_path = os.path.join(file_path, 'model.png')
+     plot_model(model, to_file = file_path, show_shapes = True, show_layer_names=True)
+     return str("Saved to " + file_path)
 
 
 
@@ -224,7 +280,6 @@ class convnet_tester():
         all_files = [i.split('/')[0] for i in all_files]
         results = pd.DataFrame({'file' : all_files, 'prediction' : predictions})
         results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
-        #grouping = 
         grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()       
         results = pd.concat([results, grouping], axis = 1)
         results.columns = ['true-class', 'prediction', 'correct/incorrect', 'class', 'correct/incorrect', 'prediction']
