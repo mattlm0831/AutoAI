@@ -38,7 +38,7 @@ def plot(history=None, file = None, min_ = 0, max_ = 1):
          return "Cannot operate on nothing"
      
      if not history:
-         history = np.load(os.path.join(file, 'history.npy'))
+         history = np.load(file)
          history = history[()]
      else:
          history = np.load(file)
@@ -56,9 +56,7 @@ def plot(history=None, file = None, min_ = 0, max_ = 1):
      plt.legend()
      plt.axis([0, len(acc)+1,min_,max_])
      if file:
-         plt.savefig(os.path.join(file, 'acc_' + file.split('//')[-1] + '.png'))
-     else:
-         plt.savefig(os.path.join(file, 'train-vs-val-acc.png'))
+         plt.savefig(os.path.join(os.path.dirname(file), 'train-vs-val-acc.png'))
      plt.figure()
      
     
@@ -69,10 +67,9 @@ def plot(history=None, file = None, min_ = 0, max_ = 1):
      plt.title('Training and Validation Loss')
      plt.legend()
      plt.axis([0,len(acc)+1, min_ , max_])
-     if history:
-         plt.savefig(os.path.join(file, 'loss_' + file.split('//')[-1] + '.png'))
-     else:
-         plt.savefig(os.path.join(file, 'train-vs-val-loss.png'))
+     if file:
+         plt.savefig(os.path.join(os.path.dirname(file), 'train-vs-val-loss.png'))
+         
      plt.figure()
      
 

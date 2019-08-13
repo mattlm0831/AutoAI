@@ -4,7 +4,7 @@ from markdown import markdown
 description = markdown(open('README.md').read())
 #text = ''.join(soup(description, 'lxml').findAll(text=True))
 setup(name="AutoAiLib",
-      version ='1.0.3',
+      version ='1.0.5',
       packages=find_packages(),
       description='The library that automates the silly ML things.',
       license='GNU GPLv3',
