@@ -63,7 +63,9 @@ This library was developed for and used with keras convolutional neural networks
 <div class="entry">
     <h2>Homeless Methods:</h2>
     <h4> model_to_img(model_path) </h4>
-    Returns an image form of your model.
+    <ul>
+        <li>Returns an image form of your model.</li>
+    </ul>
     <h4> plot(history=None, file=None, min_=0, max_=1)</h4>
     <ul><li>history- numpy file (Keras callback)</li>
         <li>file - path to a .npy file.</li>
