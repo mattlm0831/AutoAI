@@ -29,6 +29,9 @@ This library was developed for and used with keras convolutional neural networks
     <h5> Demo:</h5>
     Given a the correct arguments, we get the following output, as well as this image saved to our model directory.
     <img src="https://i.imgur.com/woiPdus.png"></img>
+    <h5> Integrate our tester seemlessly into your code: </h5>
+    <img src="https://i.imgur.com/U7z5L45.png"></img>
+    
   <h2> AutoAi.manual_test(model, testing_dir, labels) </h2>
   <h5> This function tests a model given labels and testing data. It then compiles the results in a CSV file, and groups the results by class, and by correct and incorrect.</h5>
   <ul> 
@@ -38,6 +41,7 @@ This library was developed for and used with keras convolutional neural networks
     </ul>
     <h5>Example csv:</h5>
     <img src="https://i.imgur.com/g4gNQjS.png"></img>
+ 
 </div>
 <div class="entry">
     <h2>Update! This has now been packaged in the AutoAI.data_compiler class.
