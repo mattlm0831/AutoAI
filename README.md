@@ -24,23 +24,21 @@ This library was developed for and used with keras convolutional neural networks
 <div class="entry">
     <h1> AutoAi.convnet_tester(model path or object, labels) </h1>
     <a href="https://youtu.be/sM57JDasREk"> Class Video Demo </a>
-    <h2> AutoAi.image_predict(model_path, image_path, labels)</h2>
+    <h2> AutoAi.convnet_tester.image_predict(model_path, image_path, labels)</h2>
     <h5> This function takes 3 arguments: a path to a keras model, a path to an image, and a list of labels.</h5>
     <h5> Demo:</h5>
     Given a the correct arguments, we get the following output, as well as this image saved to our model directory.
     <img src="https://i.imgur.com/woiPdus.png"></img>
-    <h5> Integrate our tester seemlessly into your code: </h5>
-    <img src="https://i.imgur.com/U7z5L45.png"></img>
     
-  <h2> AutoAi.manual_test(model, testing_dir, labels) </h2>
-  <h5> This function tests a model given labels and testing data. It then compiles the results in a CSV file, and groups the results by class, and by correct and incorrect.</h5>
+  <h2> AutoAi.convnet_tester.large_scale_test(testing_dir) </h2>
+  <h5> This function tests a model on given testing data. It then compiles the results in a CSV file, and groups the results by class, and by correct and incorrect.</h5>
   <ul> 
-    <li> Model - Path of model that you want to test or model object.</li>
     <li> Testing_dir - Path to the directory with your testing data.</li>
-    <li> Labels - Dictionary of the classes, in form (index:class_name)</li>
     </ul>
     <h5>Example csv:</h5>
     <img src="https://i.imgur.com/g4gNQjS.png"></img>
+    <h5> Integrate our tester seemlessly into your code: </h5>
+    <img src="https://i.imgur.com/U7z5L45.png"></img>
  
 </div>
 <div class="entry">
