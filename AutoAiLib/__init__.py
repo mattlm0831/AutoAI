@@ -10,6 +10,7 @@ import imutils
 import shutil
 import progressbar
 import pandas as pd
+import keras
 from keras import models as m
 from keras.preprocessing.image import img_to_array
 import numpy as np
@@ -21,8 +22,6 @@ from skimage import transform
 from skimage import util
 import matplotlib.pyplot as plt
 from keras.utils import plot_model
-
-
 
 
 ######If you are reading this, thank you for downloading my library######
@@ -220,8 +219,9 @@ class general_tester():
         print("[" + name + '] created')
         return
     
-    
-    
+
+
+
 class convnet_tester():
 
 
@@ -243,8 +243,32 @@ class convnet_tester():
         image = np.expand_dims(image, axis=0)
         return image
         
+    
+    def aggregate_tests(self, testing_dirs, agg=''):
+        tests= []
+        assert(len(testing_dirs) > 0)
+        for i in testing_dirs:
+            tests.append(self.predict_many(i, _flag='many'))
+        results = tests[0].copy()
+        results = results.drop(columns=['true-class','prediction','correct/incorrect'])
+        assert(len(tests) > 0)
+        for i in range(1, len(tests)):
+            results['number'] += tests[0]['number']
+        if agg == 'mean':
+            results['number'] /= len(tests)
+        p = os.path.dirname(testing_dirs[0])
         
-    def large_scale_test(self, testing_dir):
+        if 'aggregated_results.csv' in os.listdir(p):
+            name = 'aggregated_' + str(len(tests)) + '_tests_' + str(len(os.listdir(p))+1) + '.csv'
+            results.to_csv(os.path.join(p, name), index= False)
+        else:
+            name =  "aggregated_results.csv"
+            results.to_csv(os.path.join(p, name), index = False)
+                
+        print('['+name, "] created.")
+        return results
+                
+    def predict_many(self, testing_dir, _flag= ''):
         
         classes = os.listdir(testing_dir)
         if not classes:
@@ -279,19 +303,19 @@ class convnet_tester():
         results['correct/incorrect'] = results.apply(lambda row : check_right(row), axis =1)
         grouping = results.groupby(['file', 'correct/incorrect'], as_index=False).count()       
         results = pd.concat([results, grouping], axis = 1)
-        results.columns = ['true-class', 'prediction', 'correct/incorrect', 'class', 'correct/incorrect', 'prediction']
+        results.columns = ['true-class', 'prediction', 'correct/incorrect', 'class', 'correct/incorrect', 'number']
         os.chdir(os.path.dirname(testing_dir))
         p = os.path.dirname(testing_dir)
-        
-        if 'results.csv' in os.listdir(p):
-            name = 'results_' + str(len(os.listdir(p)) + 1) + '.csv'
-            results.to_csv(os.path.join(p, name), index= False)
-        else:
-            name =  "results.csv"
-            results.to_csv(os.path.join(p, name), index = False)
-        
-        print("[" + name + '] created')
-        return
+        if _flag != 'many':
+            if 'results.csv' in os.listdir(p):
+                name = 'results_' + str(len(os.listdir(p)) + 1) + '.csv'
+                results.to_csv(os.path.join(p, name), index= False)
+            else:
+                name =  "results.csv"
+                results.to_csv(os.path.join(p, name), index = False)
+            print("[" + name + '] created')
+            
+        return results
     
     
 def image_predict(model, image_path, labels):
